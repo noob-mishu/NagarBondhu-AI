@@ -65,6 +65,26 @@ const LandingPage = () => {
           </div>
         </div>
       </header>
+
+      <section>
+        <div>
+          <div>
+            <div >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-100 text-blue-700 font-semibold text-xs uppercase tracking-wider rounded-full mb-8">
+                <div className="w-2 h-2 rounded-full animate-pulse bg-blue-600" />
+                AI-Powered Civic Platform
+              </div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight mb-6">
+                  <span className="text-slate-900">Build a</span><br />
+                  <span className="text-slate-900">Better City,</span><br />
+                  <span style={{ background: 'linear-gradient(135deg, #2563eb, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    Together.
+                  </span>
+                </h1>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
