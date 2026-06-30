@@ -1,12 +1,14 @@
-import Sidebar from './Sidebar';
 import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Sidebar from './sidebar';
 
-const searchbar = () => {
+const Searchbar = () => {
   return (
     <div>
         <Sidebar/>
+        <Outlet/>
     </div>
   )
 }
 
-export default searchbar
+export default Searchbar
