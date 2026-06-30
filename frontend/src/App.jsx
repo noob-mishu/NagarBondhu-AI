@@ -11,6 +11,12 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage/>} />
        
+
+       <Route element={<searchbar}>
+
+
+
+       </Route>
       </Routes>
     </BrowserRouter>
   );
