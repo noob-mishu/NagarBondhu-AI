@@ -1,25 +1,9 @@
 import React from "react";
 import {
-  AlertTriangle,
-  Bell,
   Building,
-  LayoutDashboard,
-  Map,
-  MessagesSquare,
-  Phone,
-  Rss,
 } from "lucide-react";
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 const sidebar = () => {
-  const mainNavItems = [
-    { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-    { name: "Issue Map", path: "/map", icon: Map },
-    { name: "Report an Issue", path: "/report", icon: AlertTriangle },
-    { name: "Community Feed", path: "/feed", icon: Rss },
-    { name: "Discussions", path: "/discussions", icon: MessagesSquare },
-    { name: "Notification", path: "/notification", icon: Bell },
-    { name: "Emergency", path: "/emergency", icon: Phone, emergency: true },
-  ];
   return (
     <aside>
       <Link to="/" className="flex items-center gap-3 px-6 mb-6 group">
@@ -35,6 +19,26 @@ const sidebar = () => {
           </p>
         </div>
       </Link>
+
+      <div className="w-full h-px bg-linear-to-r from-transparent via-outline-variant/30 to-transparent mx-auto mb-4"></div>
+
+      
+      <Link to="/dashboard" className="flex items-center gap-3 px-6 mb-6 group cursor-pointer hover:bg-surface-container-low/50 py-2 mx-2 rounded-xl transition-colors">
+        <div className="relative">
+          <div className="w-12 h-12 rounded-full bg-surface-container overflow-hidden ring-2 ring-primary/20 ring-offset-2 ring-offset-surface group-hover:ring-primary/40 transition-all">
+            <img alt="User Profile Avatar" className="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Citizen+Advocate&background=0D8ABC&color=fff" />
+          </div>
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-secondary border-2 border-surface flex items-center justify-center">
+            <span className="text-white text-[8px]">✓</span>
+          </div>
+        </div>
+        <div>
+          <h3 className="font-semibold text-base text-on-surface group-hover:text-primary transition-colors">Citizen Advocate</h3>
+          <p className="text-xs text-on-surface-variant">1,250 XP • <span className="text-secondary font-semibold">Verified</span></p>
+        </div>
+      </Link>
+
+
     </aside>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   BadgeCheck,
+  BrainCircuit,
   Camera,
   CheckCircle,
   Edit2,
@@ -9,6 +10,7 @@ import {
   MapPin,
   Phone,
   Save,
+  Sparkles,
   User,
   X,
 } from 'lucide-react';
@@ -226,6 +228,43 @@ const UserProfileHeader = ({
   );
 };
 
+
+const DailyInsightCard = () => {
+  return (
+    <section className="col-span-1 md:col-span-8 ai-card rounded-2xl p-6">
+      {/* Card header with icon and title */}
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <BrainCircuit className="w-5 h-5 text-primary" />
+        </div>
+        <h3 className="text-xl text-primary font-bold">Daily AI Insight</h3>
+        <Sparkles className="w-4 h-4 text-primary/50 ml-1" />
+      </div>
+
+      {/* Insight message */}
+      <p className="text-on-surface mb-4 leading-relaxed">
+        There's an increase in reported waste management issues in your ward
+        today. Your contribution to verifying these could speed up the
+        resolution time by{' '}
+        <span className="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+          35%
+        </span>
+        .
+      </p>
+
+      {/* Action buttons */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button className="flex-1 border border-primary/30 text-primary font-medium text-sm px-4 py-2.5 rounded-xl hover:bg-primary/5 hover:border-primary/50 transition-all text-center active:scale-95">
+          View Hotspots
+        </button>
+        <button className="flex-1 bg-gradient-to-r from-primary-container to-primary text-white font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-all text-center shadow-md shadow-primary/20 active:scale-95">
+          Verify 3 Reports (+15 XP)
+        </button>
+      </div>
+    </section>
+  );
+};
+
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -276,7 +315,15 @@ const UserDashboard = () => {
           onChange={handleChange}
           inputEditingStyle={inputEditingStyle}
         />
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+        {/* Row 1: AI Insight + Reputation */}
+        <DailyInsightCard />
+        </div>
       </div>
+
+
     </main>
   );
 };
