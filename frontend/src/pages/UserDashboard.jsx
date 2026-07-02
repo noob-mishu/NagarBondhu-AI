@@ -1,28 +1,38 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
+  AlertTriangle,
   BadgeCheck,
+  BrainCircuit,
   Camera,
   CheckCircle,
+  CheckSquare,
   Edit2,
+  MessageSquare,
   Mail,
   MapPin,
   Phone,
   Save,
+  Sparkles,
+  ThumbsUp,
   User,
   X,
-} from 'lucide-react';
+  TrendingUp,
+  ChevronRight,
+} from "lucide-react";
 
 const SuccessBanner = ({ show }) => {
   return (
     <div
       className={`transition-all duration-300 overflow-hidden ${
-        show ? 'max-h-16 mb-6 opacity-100' : 'max-h-0 mb-0 opacity-0'
+        show ? "max-h-16 mb-6 opacity-100" : "max-h-0 mb-0 opacity-0"
       }`}
     >
       <div className="bg-primary-fixed/30 border border-primary/20 text-primary px-4 py-3 rounded-xl flex items-center gap-3">
         <CheckCircle className="w-5 h-5 text-primary" />
-        <span className="font-medium text-sm">Profile updated successfully!</span>
+        <span className="font-medium text-sm">
+          Profile updated successfully!
+        </span>
       </div>
     </div>
   );
@@ -226,19 +236,167 @@ const UserProfileHeader = ({
   );
 };
 
+const DailyInsightCard = () => {
+  return (
+    <section className="col-span-1 md:col-span-8 rounded-2xl p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+          <BrainCircuit className="w-5 h-5 text-primary" />
+        </div>
+        <h3 className="text-xl text-primary font-bold">Daily AI Insight</h3>
+        <Sparkles className="w-4 h-4 text-primary/50 ml-1" />
+      </div>
+
+      <p className="text-on-surface mb-4 leading-relaxed">
+        There's an increase in reported waste management issues in your ward
+        today. Your contribution to verifying these could speed up the
+        resolution time by{" "}
+        <span className="font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded">
+          35%
+        </span>
+        .
+      </p>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button className="flex-1 border border-primary/30 text-primary font-medium text-sm px-4 py-2.5 rounded-xl hover:bg-primary/5 hover:border-primary/50 transition-all text-center active:scale-95">
+          View Hotspots
+        </button>
+        <button className="flex-1 bg-gradient-to-r from-primary-container to-primary text-white font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-all text-center shadow-md shadow-primary/20 active:scale-95">
+          Verify 3 Reports (+15 XP)
+        </button>
+      </div>
+    </section>
+  );
+};
+
+const ReputationCard = () => {
+  const currentXP = 1250;
+  const maxXP = 2000;
+  const xpRemaining = maxXP - currentXP;
+  const progressPercent = (currentXP / maxXP) * 100;
+
+  return (
+    <section className="col-span-1 md:col-span-4 glass-card rounded-2xl p-6 flex flex-col">
+      <h3 className="font-bold text-xs text-outline mb-3 uppercase tracking-wider flex items-center gap-1.5">
+        <TrendingUp className="w-3.5 h-3.5" /> CURRENT RANK: MASTER ADVOCATE
+      </h3>
+
+      <div className="flex justify-between items-end mb-2">
+        <span className="font-bold text-4xl text-gradient leading-none">
+          {currentXP.toLocaleString()}
+        </span>
+        <span className="text-sm text-outline font-medium">
+          / {maxXP.toLocaleString()} XP
+        </span>
+      </div>
+
+      <div className="w-full bg-surface-container-highest rounded-full h-3 mb-4 overflow-hidden">
+        <div
+          className="bg-gradient-to-r from-primary to-primary-container h-3 rounded-full transition-all duration-1000 relative"
+          style={{ width: `${progressPercent}%` }}
+        >
+          <div className="absolute inset-0 bg-white/20 animate-pulse-soft rounded-full" />
+        </div>
+      </div>
+
+      <p className="text-sm text-on-surface-variant">
+        {xpRemaining} XP until{" "}
+        <span className="font-semibold text-on-surface">Civic Guardian</span>
+      </p>
+
+      <div className="mt-auto pt-3">
+        <a
+          className="text-primary font-medium text-sm flex items-center gap-1 hover:underline hover:gap-2 transition-all"
+          href="#"
+        >
+          View Leaderboard <ChevronRight className="w-4 h-4" />
+        </a>
+      </div>
+    </section>
+  );
+};
+
+const ImpactCounters = ({ impactStats }) => {
+  const stats = [
+    {
+      icon: AlertTriangle,
+      value: impactStats?.totalReports ?? "0",
+      label: "Reports",
+      color: "text-primary",
+      bg: "bg-primary/10",
+    },
+    {
+      icon: CheckSquare,
+      value: impactStats?.totalResolved ?? "0",
+      label: "Resolved",
+      color: "text-primary-container",
+      bg: "bg-primary-container/10",
+    },
+    {
+      icon: ThumbsUp,
+      value: impactStats?.totalUpvotes ?? "0",
+      label: "Upvotes",
+      color: "text-surface-tint",
+      bg: "bg-surface-tint/10",
+    },
+    {
+      icon: MessageSquare,
+      value: impactStats?.totalDiscussions ?? "0",
+      label: "Discussions",
+      color: "text-primary-fixed-dim",
+      bg: "bg-primary-fixed-dim/10",
+    },
+  ];
+
+  return (
+    <section className="col-span-1 md:col-span-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+      {stats.map((stat) => {
+        const IconComponent = stat.icon;
+
+        return (
+          <div
+            key={stat.label}
+            className="glass-card rounded-2xl p-5 text-center hover-lift group *:transition-all duration-200"
+          >
+            <div
+              className={`w-10 h-10 rounded-xl ${stat.bg} ${stat.color} mx-auto mb-2 flex items-center justify-center group-hover:scale-110 transition-transform`}
+            >
+              <IconComponent className="w-5 h-5" />
+            </div>
+
+            <div className="font-bold text-2xl text-on-surface">
+              {stat.value}
+            </div>
+
+            <div className="text-xs font-semibold text-outline uppercase tracking-wider mt-1">
+              {stat.label}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+};
+
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [userData, setUserData] = useState({
-    name: 'NagarBondhu User',
-    email: 'citizen@nagarbondhu.ai',
-    phone: '+880 1700-000000',
-    location: 'Ward 12, Dhaka',
-    bio: 'Helping improve the city by reporting issues and following civic updates.',
+    name: "NagarBondhu User",
+    email: "citizen@nagarbondhu.ai",
+    phone: "+880 1700-000000",
+    location: "Ward 12, Dhaka",
+    bio: "Helping improve the city by reporting issues and following civic updates.",
   });
+  const impactStats = {
+    totalReports: 24,
+    totalResolved: 18,
+    totalUpvotes: 156,
+    totalDiscussions: 9,
+  };
 
   const inputEditingStyle =
-    'block w-full pl-10 pr-4 py-2.5 text-sm rounded-xl outline-none transition-all duration-200 bg-white border border-outline-variant/40 focus:border-primary focus:ring-4 focus:ring-primary/10 text-on-surface';
+    "block w-full pl-10 pr-4 py-2.5 text-sm rounded-xl outline-none transition-all duration-200 bg-white border border-outline-variant/40 focus:border-primary focus:ring-4 focus:ring-primary/10 text-on-surface";
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -264,6 +422,7 @@ const UserDashboard = () => {
           <p className="font-body-md text-sm text-on-surface-variant">
             Real-time civic intelligence and activity tracking.
           </p>
+          <p className="text-4xl">Checking Promit's Commit</p>
         </div>
 
         <SuccessBanner show={showSuccess} />
@@ -276,6 +435,12 @@ const UserDashboard = () => {
           onChange={handleChange}
           inputEditingStyle={inputEditingStyle}
         />
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <DailyInsightCard />
+          <ReputationCard />
+          <ImpactCounters impactStats={impactStats} />
+        </div>
       </div>
     </main>
   );
