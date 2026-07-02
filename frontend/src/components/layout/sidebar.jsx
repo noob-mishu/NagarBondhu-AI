@@ -3,6 +3,7 @@ import {
   AlertTriangle,
   Bell,
   Building,
+  Check,
   LayoutDashboard,
   LogOut,
   Map,
@@ -24,7 +25,7 @@ const mainNavItems = [
 
 const Sidebar = () => {
   return (
-    <aside className="flex h-full flex-col">
+    <aside className="flex min-h-full flex-col">
       <Link to="/" className="flex items-center gap-3 px-6 mb-6 group">
         <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary to-primary-container flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
           <Building className="w-5 h-5 text-white" />
@@ -54,7 +55,7 @@ const Sidebar = () => {
             />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-secondary border-2 border-surface flex items-center justify-center">
-            <span className="text-white text-[8px]">OK</span>
+            <Check className="h-2.5 w-2.5 text-white" />
           </div>
         </div>
         <div>

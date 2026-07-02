@@ -13,6 +13,8 @@ import {
   Sparkles,
   User,
   X,
+  TrendingUp,
+  Tre,
 } from 'lucide-react';
 
 const SuccessBanner = ({ show }) => {
@@ -265,6 +267,39 @@ const DailyInsightCard = () => {
   );
 };
 
+const ReputationCard = () => {
+  // ---- Demo data (in a real app, this would come from the backend) ----
+  const currentXP = 1250;
+  const maxXP = 2000;
+  const xpRemaining = maxXP - currentXP; // 750 XP left
+  const progressPercent = (currentXP / maxXP) * 100; // 62.5%
+
+  return (
+    <section className="col-span-1 md:col-span-4 glass-card rounded-2xl p-6 flex flex-col">
+      {/* Title */}
+      <h3 className="font-bold text-xs text-outline mb-3 uppercase tracking-wider flex items-center gap-1.5">
+        <TrendingUp className="w-3.5 h-3.5" /> CURRENT RANK: MASTER ADVOCATE
+      </h3>
+
+      {/* XP numbers */}
+      <div className="flex justify-between items-end mb-2">
+        <span className="font-bold text-4xl text-gradient leading-none">
+          {currentXP.toLocaleString()}
+        </span>
+        <span className="text-sm text-outline font-medium">
+          / {maxXP.toLocaleString()} XP
+        </span>
+      </div>
+
+      
+
+      
+
+      
+    </section>
+  );
+};
+
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -318,8 +353,10 @@ const UserDashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
-        {/* Row 1: AI Insight + Reputation */}
+        
         <DailyInsightCard />
+        <ReputationCard/>
+
         </div>
       </div>
 
