@@ -272,7 +272,7 @@ const DailyInsightCard = () => {
 const ReputationCard = () => {
   const currentXP = 1250;
   const maxXP = 2000;
-  const xpRemaining = maxXP - currentXP; 
+  const xpRemaining = maxXP - currentXP;
   const progressPercent = (currentXP / maxXP) * 100;
 
   return (
@@ -315,7 +315,6 @@ const ReputationCard = () => {
     </section>
   );
 };
-
 
 const ImpactCounters = ({ impactStats }) => {
   const stats = [
@@ -379,7 +378,6 @@ const ImpactCounters = ({ impactStats }) => {
   );
 };
 
-
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -424,6 +422,7 @@ const UserDashboard = () => {
           <p className="font-body-md text-sm text-on-surface-variant">
             Real-time civic intelligence and activity tracking.
           </p>
+          <p className="text-4xl">Checking Promit's Commit</p>
         </div>
 
         <SuccessBanner show={showSuccess} />
