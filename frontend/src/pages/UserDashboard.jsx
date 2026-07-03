@@ -380,6 +380,91 @@ const ImpactCounters = ({ impactStats }) => {
 };
 
 
+
+const ActiveReportsList = ({ reports: rawReports }) => {
+  const getStatusColor = (status) => {
+    const colors = {
+      'Pending': 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20',
+      'Under Review': 'bg-primary/10 text-primary border-primary/20',
+      'In Progress': 'bg-primary-container/10 text-primary-container border-primary-container/20',
+      'Resolved': 'bg-green-500/10 text-green-700 border-green-500/20',
+    };
+    return colors[status] || 'bg-gray-100 text-gray-600 border-gray-200';
+  };
+
+  const getTimeAgo = (dateStr) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor(diff / 3600000);
+    if (days > 0) return `Reported ${days}d ago`;
+    if (hours > 0) return `Reported ${hours}h ago`;
+    return 'Reported just now';
+  };
+
+  const reports = (rawReports || []).map((r) => ({
+    id: r._id,
+    title: r.title,
+    timeAgo: getTimeAgo(r.createdAt),
+    status: r.status,
+    statusColor: getStatusColor(r.status),
+    upvotes: r.upvoteCount || 0,
+    image: r.images?.[0] || `https://ui-avatars.com/api/?name=${encodeURIComponent(r.title)}&background=E3F2FD&color=1565C0&size=100`,
+  }));
+
+  return (
+    <section className="col-span-1 md:col-span-7 glass-card rounded-2xl p-6">
+      <div className="flex justify-between items-center mb-5">
+        <h3 className="font-bold text-xl text-on-surface">Active Reports</h3>
+        <Link
+          to="/feed"
+          className="text-primary font-medium text-sm hover:underline flex items-center gap-1 hover:gap-2 transition-all"
+        >
+          See All <ChevronRight className="w-4 h-4" />
+        </Link>
+      </div>
+
+      <div className="space-y-3">
+        {reports.map((report) => (
+          <Link
+            key={report.id}
+            to={`/issue/${report.id}`}
+            className="flex items-center gap-4 p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-low/50 hover:border-primary/20 transition-all group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-xl bg-surface-container flex-shrink-0 overflow-hidden shadow-sm">
+              <img
+                alt="Issue thumbnail"
+                className="w-full h-full object-cover"
+                src={report.image}
+              />
+            </div>
+
+            <div className="flex-grow min-w-0">
+              <h4 className="font-medium text-on-surface line-clamp-1 group-hover:text-primary transition-colors">
+                {report.title}
+              </h4>
+              <p className="text-xs font-semibold text-outline uppercase tracking-wider mt-1">
+                {report.timeAgo}
+              </p>
+            </div>
+
+            <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              <span
+                className={`${report.statusColor} text-[10px] font-bold px-2.5 py-0.5 rounded-lg uppercase border`}
+              >
+                {report.status}
+              </span>
+              <span className="font-medium text-sm text-on-surface-variant flex items-center gap-1">
+                <ThumbsUp className="w-3.5 h-3.5" /> {report.upvotes}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -396,6 +481,29 @@ const UserDashboard = () => {
     totalUpvotes: 156,
     totalDiscussions: 9,
   };
+  const activeReports = [
+    {
+      _id: "road-101",
+      title: "Broken streetlight near Dhanmondi 27",
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      status: "Under Review",
+      upvoteCount: 18,
+    },
+    {
+      _id: "waste-204",
+      title: "Overflowing waste bin beside local market",
+      createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
+      status: "In Progress",
+      upvoteCount: 31,
+    },
+    {
+      _id: "drain-315",
+      title: "Blocked drain causing waterlogging",
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      status: "Pending",
+      upvoteCount: 12,
+    },
+  ];
 
   const inputEditingStyle =
     "block w-full pl-10 pr-4 py-2.5 text-sm rounded-xl outline-none transition-all duration-200 bg-white border border-outline-variant/40 focus:border-primary focus:ring-4 focus:ring-primary/10 text-on-surface";
@@ -441,6 +549,7 @@ const UserDashboard = () => {
           <DailyInsightCard />
           <ReputationCard />
           <ImpactCounters impactStats={impactStats} />
+          <ActiveReportsList reports={activeReports} />
         </div>
       </div>
     </main>
