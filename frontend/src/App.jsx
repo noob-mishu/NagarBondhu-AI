@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 
-import Searchbar from './components/layout/searchbar';
+import SidebarLayout from './components/layout/searchbar';
 import LandingPage from './pages/LandingPage';
 import UserDashboard from './pages/UserDashboard';
 
@@ -26,7 +26,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<PlaceholderPage title="Sign In" />} />
-        <Route element={<Searchbar />}>
+        <Route element={<SidebarLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/map" element={<PlaceholderPage title="Issue Map" />} />
           <Route path="/report" element={<PlaceholderPage title="Report an Issue" />} />

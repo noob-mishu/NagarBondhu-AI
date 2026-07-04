@@ -15,6 +15,7 @@ import {
   PartyPopper,
   Phone,
   Save,
+  Search,
   Sparkles,
   ThumbsUp,
   User,
@@ -504,10 +505,26 @@ const ActiveReportsList = ({ reports }) => {
   );
 };
 
+const DashboardSearch = ({ value, onChange }) => {
+  return (
+    <div className="relative w-full sm:max-w-md">
+      <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-outline-variant" />
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-xl border border-outline-variant/40 bg-white py-2.5 pl-11 pr-4 text-sm text-on-surface outline-none transition-all placeholder:text-outline focus:border-primary focus:ring-4 focus:ring-primary/10"
+        placeholder="Search reports, activity, status..."
+      />
+    </div>
+  );
+};
+
 
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [userData, setUserData] = useState({
     name: "NagarBondhu User",
     email: "citizen@nagarbondhu.ai",
@@ -567,6 +584,23 @@ const UserDashboard = () => {
 
   const inputEditingStyle =
     "block w-full pl-10 pr-4 py-2.5 text-sm rounded-xl outline-none transition-all duration-200 bg-white border border-outline-variant/40 focus:border-primary focus:ring-4 focus:ring-primary/10 text-on-surface";
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredReports = normalizedSearchQuery
+    ? activeReports.filter((report) =>
+        [report.title, report.status]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearchQuery),
+      )
+    : activeReports;
+  const filteredActivities = normalizedSearchQuery
+    ? communityActivities.filter((activity) =>
+        [activity.actorName, activity.message, activity.timeAgo]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearchQuery),
+      )
+    : communityActivities;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -585,14 +619,16 @@ const UserDashboard = () => {
   return (
     <main className="min-h-screen bg-surface px-4 py-8 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-8">
-          <h1 className="font-headline-md text-2xl font-bold text-on-surface mb-1 tracking-tight">
-            User Dashboard Overview
-          </h1>
-          <p className="font-body-md text-sm text-on-surface-variant">
-            Real-time civic intelligence and activity tracking.
-          </p>
-          
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h1 className="font-headline-md text-2xl font-bold text-on-surface mb-1 tracking-tight">
+              User Dashboard Overview
+            </h1>
+            <p className="font-body-md text-sm text-on-surface-variant">
+              Real-time civic intelligence and activity tracking.
+            </p>
+          </div>
+          <DashboardSearch value={searchQuery} onChange={setSearchQuery} />
         </div>
 
         <SuccessBanner show={showSuccess} />
@@ -610,8 +646,8 @@ const UserDashboard = () => {
           <DailyInsightCard />
           <ReputationCard />
           <ImpactCounters impactStats={impactStats} />
-          <ActiveReportsList reports={activeReports} />
-          <CommunityPulse activities={communityActivities} />
+          <ActiveReportsList reports={filteredReports} />
+          <CommunityPulse activities={filteredActivities} />
         </div>
       </div>
     </main>
