@@ -241,7 +241,7 @@ const UserProfileHeader = ({
 
 const DailyInsightCard = () => {
   return (
-    <section className="col-span-1 md:col-span-8 rounded-2xl p-6">
+    <section className="col-span-1 md:col-span-8 rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-6 transition-colors hover:border-primary">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <BrainCircuit className="w-5 h-5 text-primary" />
