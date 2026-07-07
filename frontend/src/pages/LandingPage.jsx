@@ -111,6 +111,23 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+
+
+      <section id="impact" className="relative overflow-hidden py-20 md:py-24" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%)' }}>
+          <div className="relative max-w-7xl mx-auto px-6">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">Making a Real Difference</h2>
+              <p className="text-blue-200/50 max-w-md mx-auto">Real numbers from real communities across Bangladesh.</p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <StatItem icon={ClipboardList} endValue={12500} suffix="+" label="Issues Reported" />
+              <StatItem icon={CheckCircle} endValue={8200} suffix="+" label="Problems Solved" />
+              <StatItem icon={Users} endValue={24000} suffix="+" label="Active Citizens" />
+              <StatItem icon={MapPin} endValue={64} suffix="" label="Districts Covered" />
+            </div>
+          </div>
+      </section>
     </div>
   );
 };
