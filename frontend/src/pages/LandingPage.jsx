@@ -1,6 +1,31 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { AlertTriangle, ArrowRight, Compass } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle,
+  ClipboardList,
+  Compass,
+  MapPin,
+  Users,
+} from "lucide-react";
+
+const StatItem = ({ icon: Icon, endValue, suffix, label, accent }) => {
+  return (
+    <div className="group rounded-2xl border border-white bg-white p-6 text-center shadow-lg shadow-blue-950/10 transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/15">
+      <div
+        className={`mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${accent}`}
+      >
+        <Icon size={24} />
+      </div>
+      <div className="text-3xl font-black tracking-tight text-slate-950 transition-colors duration-300 group-hover:text-blue-700 md:text-4xl">
+        {endValue.toLocaleString()}
+        {suffix}
+      </div>
+      <p className="mt-2 text-sm font-semibold text-slate-500">{label}</p>
+    </div>
+  );
+};
 
 const LandingPage = () => {
   return (
@@ -113,18 +138,56 @@ const LandingPage = () => {
       </section>
 
 
-      <section id="impact" className="relative overflow-hidden py-20 md:py-24" style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%)' }}>
-          <div className="relative max-w-7xl mx-auto px-6">
-            <div className="text-center mb-14">
-              <h2 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-3">Making a Real Difference</h2>
-              <p className="text-blue-200/50 max-w-md mx-auto">Real numbers from real communities across Bangladesh.</p>
+      <section
+        id="impact"
+        className="py-20 md:py-24"
+        style={{
+          background:
+            "linear-gradient(135deg, #eff6ff 0%, #dbeafe 52%, #ecfdf5 100%)",
+        }}
+      >
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <span className="inline-flex rounded-full bg-blue-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-blue-700">
+                Our Impact
+              </span>
+              <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">
+                Making a Real Difference
+              </h2>
+              <p className="mt-4 text-base leading-7 text-slate-600">
+                Real numbers from real communities across Bangladesh.
+              </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <StatItem icon={ClipboardList} endValue={12500} suffix="+" label="Issues Reported" />
-              <StatItem icon={CheckCircle} endValue={8200} suffix="+" label="Problems Solved" />
-              <StatItem icon={Users} endValue={24000} suffix="+" label="Active Citizens" />
-              <StatItem icon={MapPin} endValue={64} suffix="" label="Districts Covered" />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              <StatItem
+                icon={ClipboardList}
+                endValue={12500}
+                suffix="+"
+                label="Issues Reported"
+                accent="bg-blue-50 text-blue-700"
+              />
+              <StatItem
+                icon={CheckCircle}
+                endValue={8200}
+                suffix="+"
+                label="Problems Solved"
+                accent="bg-emerald-50 text-emerald-700"
+              />
+              <StatItem
+                icon={Users}
+                endValue={24000}
+                suffix="+"
+                label="Active Citizens"
+                accent="bg-violet-50 text-violet-700"
+              />
+              <StatItem
+                icon={MapPin}
+                endValue={64}
+                suffix=""
+                label="Districts Covered"
+                accent="bg-amber-50 text-amber-700"
+              />
             </div>
           </div>
       </section>
