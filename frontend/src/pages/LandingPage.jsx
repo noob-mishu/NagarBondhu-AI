@@ -3,12 +3,74 @@ import { Link } from "react-router-dom";
 import {
   AlertTriangle,
   ArrowRight,
+  BarChart3,
+  Bot,
+  Camera,
   CheckCircle,
   ClipboardList,
   Compass,
+  Map,
   MapPin,
+  MessageCircle,
+  ShieldCheck,
+  Sparkles,
   Users,
 } from "lucide-react";
+
+const FEATURES_DATA = [
+  {
+    icon: Camera,
+    title: "Photo-Based Reporting",
+    desc: "Capture issues with photos and details so teams can understand the problem quickly.",
+    color: "bg-blue-50 text-blue-700",
+  },
+  {
+    icon: Bot,
+    title: "AI Issue Detection",
+    desc: "Classify civic problems faster with smart suggestions for category and priority.",
+    color: "bg-emerald-50 text-emerald-700",
+  },
+  {
+    icon: Map,
+    title: "Live Location Mapping",
+    desc: "Pin reports on the city map and help authorities find exact problem spots.",
+    color: "bg-violet-50 text-violet-700",
+  },
+  {
+    icon: MessageCircle,
+    title: "Community Updates",
+    desc: "Discuss reports, share context, and keep neighbors informed as issues move forward.",
+    color: "bg-amber-50 text-amber-700",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Verified Progress",
+    desc: "Track every step from submission to resolution with clear status updates.",
+    color: "bg-rose-50 text-rose-700",
+  },
+  {
+    icon: BarChart3,
+    title: "Impact Insights",
+    desc: "See issue trends and resolution patterns across communities and districts.",
+    color: "bg-cyan-50 text-cyan-700",
+  },
+];
+
+const FeatureCard = ({ icon: Icon, title, desc, color }) => {
+  return (
+    <article className="group rounded-2xl border border-slate-100 bg-white p-7 shadow-lg shadow-blue-950/5 transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/10">
+      <div
+        className={`mb-6 flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110 group-hover:shadow-md ${color}`}
+      >
+        <Icon size={24} />
+      </div>
+      <h3 className="text-lg font-black tracking-tight text-slate-950">
+        {title}
+      </h3>
+      <p className="mt-3 text-sm leading-6 text-slate-500">{desc}</p>
+    </article>
+  );
+};
 
 const StatItem = ({ icon: Icon, endValue, suffix, label, accent }) => {
   return (
@@ -188,6 +250,27 @@ const LandingPage = () => {
                 label="Districts Covered"
                 accent="bg-amber-50 text-amber-700"
               />
+            </div>
+          </div>
+      </section>
+
+
+      <section id="features" className="py-24 md:py-32 bg-white">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center max-w-2xl mx-auto mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 text-blue-600 font-semibold text-xs uppercase tracking-wider rounded-full mb-5">
+                <Sparkles className="w-3.5 h-3.5" /> Features
+              </div>
+              <h2 className="text-4xl font-black text-slate-900 mb-5 tracking-tight">
+                Everything You Need to <span className="bg-linear-to-br from-blue-600 to-blue-500 bg-clip-text text-transparent">Fix Your City</span>
+              </h2>
+            </div>
+
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {FEATURES_DATA.map((feature, idx) => (
+                <FeatureCard key={idx} icon={feature.icon} title={feature.title} desc={feature.desc} color={feature.color} />
+              ))}
             </div>
           </div>
       </section>
