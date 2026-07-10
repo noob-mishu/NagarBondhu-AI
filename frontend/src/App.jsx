@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom';
 import SidebarLayout from './components/layout/searchbar';
 import LandingPage from './pages/LandingPage';
 import UserDashboard from './pages/UserDashboard';
+import ReportIssue from './pages/ReportIssue';
 
 const PlaceholderPage = ({ title }) => {
   return (
@@ -29,7 +30,7 @@ function App() {
         <Route element={<SidebarLayout />}>
           <Route path="/dashboard" element={<UserDashboard />} />
           <Route path="/map" element={<PlaceholderPage title="Issue Map" />} />
-          <Route path="/report" element={<PlaceholderPage title="Report an Issue" />} />
+           <Route path="/report" element={<ReportIssue/>} />
           <Route path="/feed" element={<PlaceholderPage title="Community Feed" />} />
           <Route path="/discussions" element={<PlaceholderPage title="Discussions" />} />
           <Route path="/notification" element={<PlaceholderPage title="Notifications" />} />
