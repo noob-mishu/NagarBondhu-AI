@@ -120,7 +120,7 @@ const ReportIssue = () => {
       <form className="mt-8 flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
         {errors.form && <p className="rounded-lg bg-error-container px-4 py-3 text-sm text-on-error-container">{errors.form}</p>}
         <div className="flex flex-col gap-1">
-          <label className="font-medium text-sm text-on-surface" htmlFor="title">Issue Title</label>
+          <label className="font-medium text-sm text-on-surface">Issue Title</label>
           <input className={inputClass} id="title" name="title" value={form.title} onChange={updateField} placeholder="e.g., Large pothole on Main St." type="text" aria-invalid={Boolean(errors.title)} />
           {errors.title && <p className="text-sm text-error">{errors.title}</p>}
         </div>
