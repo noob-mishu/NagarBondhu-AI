@@ -7,12 +7,15 @@ import {
   Camera,
   CheckCircle,
   CheckSquare,
+  Clock,
   Edit2,
   MessageSquare,
   Mail,
   MapPin,
+  PartyPopper,
   Phone,
   Save,
+  Search,
   Sparkles,
   ThumbsUp,
   User,
@@ -238,7 +241,7 @@ const UserProfileHeader = ({
 
 const DailyInsightCard = () => {
   return (
-    <section className="col-span-1 md:col-span-8 rounded-2xl p-6">
+    <section className="col-span-1 md:col-span-8 rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-6 transition-colors hover:border-primary">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
           <BrainCircuit className="w-5 h-5 text-primary" />
@@ -378,9 +381,150 @@ const ImpactCounters = ({ impactStats }) => {
   );
 };
 
+const CommunityPulse = ({ activities: rawActivities }) => {
+  const activities = (rawActivities || []).map((a) => ({
+    id: a._id,
+    type: a.type,
+    userName: a.actorName,
+    message: a.message,
+    timeAgo: a.timeAgo,
+    avatarUrl: a.actorAvatarUrl,
+  }));
+
+  return (
+    <section className="col-span-1 md:col-span-5 glass-card rounded-2xl p-6">
+      <h3 className="font-bold text-xl text-on-surface mb-5">Community Pulse</h3>
+
+      <div className="space-y-4">
+        {activities.map((activity) => (
+          <div key={activity.id} className="flex gap-3 group cursor-pointer">
+            
+            {activity.avatarUrl ? (
+        
+              <div className="w-9 h-9 rounded-full bg-surface-container flex-shrink-0 overflow-hidden ring-2 ring-outline-variant/20 ring-offset-1 ring-offset-surface">
+                <img
+                  alt={activity.userName}
+                  className="w-full h-full object-cover"
+                  src={activity.avatarUrl}
+                />
+              </div>
+            ) : (
+              
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-fixed-dim to-primary-fixed flex items-center justify-center flex-shrink-0 text-on-primary-fixed shadow-sm">
+                <PartyPopper className="w-4 h-4" />
+              </div>
+            )}
+
+            {/* Activity text and timestamp */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-on-surface">
+                <span className="font-semibold group-hover:text-primary transition-colors">
+                  {activity.userName}
+                </span>{' '}
+                {activity.message}
+              </p>
+              <p className="text-xs font-semibold text-outline uppercase tracking-wider mt-1">
+                {activity.timeAgo}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const formatReportAge = (createdAt) => {
+  const createdDate = new Date(createdAt);
+  const diffMs = Date.now() - createdDate.getTime();
+
+  if (Number.isNaN(diffMs)) {
+    return "Recently";
+  }
+
+  const minutes = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (days > 0) {
+    return `${days}d ago`;
+  }
+
+  if (hours > 0) {
+    return `${hours}h ago`;
+  }
+
+  return `${minutes}m ago`;
+};
+
+const ActiveReportsList = ({ reports }) => {
+  return (
+    <section className="col-span-1 md:col-span-7 glass-card rounded-2xl p-6">
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <h3 className="font-bold text-xl text-on-surface">Active Reports</h3>
+        <Link
+          to="/feed"
+          className="text-primary font-medium text-sm flex items-center gap-1 hover:underline hover:gap-2 transition-all"
+        >
+          View all <ChevronRight className="w-4 h-4" />
+        </Link>
+      </div>
+
+      <div className="space-y-3">
+        {reports.map((report) => (
+          <Link
+            key={report._id}
+            to={`/issue/${report._id}`}
+            className="block rounded-xl border border-outline-variant/30 bg-surface/70 p-4 transition-all hover:border-primary/30 hover:bg-primary/5 active:scale-[0.99]"
+          >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <h4 className="font-semibold text-on-surface line-clamp-2">
+                  {report.title}
+                </h4>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-xs font-medium text-outline">
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5" />
+                    {formatReportAge(report.createdAt)}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <ThumbsUp className="h-3.5 w-3.5" />
+                    {report.upvoteCount} upvotes
+                  </span>
+                </div>
+              </div>
+
+              <span className="w-fit rounded-lg border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+                {report.status}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+const DashboardSearch = ({ value, onChange }) => {
+  return (
+    <div className="relative w-full sm:max-w-md">
+      <Search className="absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-outline-variant" />
+      <input
+        type="search"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-xl border border-outline-variant/40 bg-white py-2.5 pl-11 pr-4 text-sm text-on-surface outline-none transition-all placeholder:text-outline focus:border-primary focus:ring-4 focus:ring-primary/10"
+        placeholder="Search reports, activity, status..."
+      />
+    </div>
+  );
+};
+
+
 const UserDashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [userData, setUserData] = useState({
     name: "NagarBondhu User",
     email: "citizen@nagarbondhu.ai",
@@ -394,9 +538,69 @@ const UserDashboard = () => {
     totalUpvotes: 156,
     totalDiscussions: 9,
   };
+  const activeReports = [
+    {
+      _id: "road-101",
+      title: "Broken streetlight near Dhanmondi 27",
+      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      status: "Under Review",
+      upvoteCount: 18,
+    },
+    {
+      _id: "waste-204",
+      title: "Overflowing waste bin beside local market",
+      createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(),
+      status: "In Progress",
+      upvoteCount: 31,
+    },
+    {
+      _id: "drain-315",
+      title: "Blocked drain causing waterlogging",
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      status: "Pending",
+      upvoteCount: 12,
+    },
+  ];
+  const communityActivities = [
+    {
+      _id: "activity-1",
+      actorName: "Ayesha Rahman",
+      message: "verified a drainage issue near Kalabagan.",
+      timeAgo: "12 MIN AGO",
+    },
+    {
+      _id: "activity-2",
+      actorName: "Tanvir Ahmed",
+      message: "added an update to the waste collection report.",
+      timeAgo: "34 MIN AGO",
+    },
+    {
+      _id: "activity-3",
+      actorName: "NagarBondhu AI",
+      message: "detected a rising cluster of streetlight reports.",
+      timeAgo: "1 HR AGO",
+    },
+  ];
 
   const inputEditingStyle =
     "block w-full pl-10 pr-4 py-2.5 text-sm rounded-xl outline-none transition-all duration-200 bg-white border border-outline-variant/40 focus:border-primary focus:ring-4 focus:ring-primary/10 text-on-surface";
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredReports = normalizedSearchQuery
+    ? activeReports.filter((report) =>
+        [report.title, report.status]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearchQuery),
+      )
+    : activeReports;
+  const filteredActivities = normalizedSearchQuery
+    ? communityActivities.filter((activity) =>
+        [activity.actorName, activity.message, activity.timeAgo]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearchQuery),
+      )
+    : communityActivities;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -415,14 +619,16 @@ const UserDashboard = () => {
   return (
     <main className="min-h-screen bg-surface px-4 py-8 sm:px-6 lg:px-10">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-8">
-          <h1 className="font-headline-md text-2xl font-bold text-on-surface mb-1 tracking-tight">
-            User Dashboard Overview
-          </h1>
-          <p className="font-body-md text-sm text-on-surface-variant">
-            Real-time civic intelligence and activity tracking.
-          </p>
-          <p className="text-4xl">Checking Promit's Commit</p>
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h1 className="font-headline-md text-2xl font-bold text-on-surface mb-1 tracking-tight">
+              User Dashboard Overview
+            </h1>
+            <p className="font-body-md text-sm text-on-surface-variant">
+              Real-time civic intelligence and activity tracking.
+            </p>
+          </div>
+          <DashboardSearch value={searchQuery} onChange={setSearchQuery} />
         </div>
 
         <SuccessBanner show={showSuccess} />
@@ -440,6 +646,8 @@ const UserDashboard = () => {
           <DailyInsightCard />
           <ReputationCard />
           <ImpactCounters impactStats={impactStats} />
+          <ActiveReportsList reports={filteredReports} />
+          <CommunityPulse activities={filteredActivities} />
         </div>
       </div>
     </main>
