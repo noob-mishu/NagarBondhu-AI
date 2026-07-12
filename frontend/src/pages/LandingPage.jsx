@@ -1,6 +1,136 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { AlertTriangle, ArrowRight, Compass } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  AlertTriangle, Compass, BrainCircuit, MessageSquare, Activity, LineChart,
+  ClipboardList, CheckCircle, Home, Rss, Map, User, ArrowRight, Shield, Zap,
+  Star, MapPin, Users, ExternalLink, Mail, Menu, X, Building, Award,
+  ChevronRight, Sparkles, TrendingUp, Heart
+} from 'lucide-react';
+
+const FEATURES_DATA = [
+  { icon: BrainCircuit, title: "AI Analysis", color: "#2563eb", desc: "Smart routing ensures your problem goes to the right desk instantly, cutting red tape." },
+  { icon: Activity, title: "Live Tracking", color: "#f59e0b", desc: "No more guessing. See exactly where your report is in the resolution pipeline." },
+  { icon: MessageSquare, title: "Local Forums", color: "#8b5cf6", desc: "Discuss neighborhood issues, organize cleanups, and connect with your community." },
+  { icon: LineChart, title: "City Insights", color: "#06b6d4", desc: "Data-driven views of which wards are most responsive and where issues cluster." },
+  { icon: Map, title: "Interactive Map", color: "#ec4899", desc: "Explore a live map of all reported issues in your city with heat maps and clusters." },
+  { icon: Shield, title: "Verified Authority", color: "#10b981", desc: "Direct connections to verified local councilors and municipal service providers." }
+];
+
+const HOW_IT_WORKS_STEPS = [
+  { num: '1', title: 'Submit Report', desc: 'Snap a photo and describe the issue. Location is auto-captured.', color: '#2563eb' },
+  { num: '2', title: 'AI Categorizes', desc: 'Our AI analyzes the report and routes it to the right department.', color: '#8b5cf6' },
+  { num: '3', title: 'Community Votes', desc: 'Neighbors upvote the issue to increase priority and add context.', color: '#f59e0b' },
+  { num: '4', title: 'Track & Resolve', desc: 'Follow live progress and get notified when it is resolved.', color: '#10b981' }
+];
+
+const REVIEWS_DATA = [
+  { name: "Rahim Ahmed", role: "Resident, Mirpur", color: "#2563eb", text: "Reported a broken streetlamp and it was fixed the next day. The transparency is exactly what our city needed." },
+  { name: "Arif Hossain", role: "Ward Councilor", color: "#8b5cf6", text: "As a ward councilor, this platform helps me see exactly what my constituents care about most. It's invaluable." },
+  { name: "Sumaiya Islam", role: "Community Organizer", color: "#06b6d4", text: "The community upvote feature is brilliant. Major problems affecting many people get prioritized immediately." }
+];
+
+/* ============================================================================
+   HELPER COMPONENTS
+   These are small, reusable pieces of the user interface.
+============================================================================ */
+
+
+
+/**
+ * StatItem Component
+ * Purpose: Animates a number counting up from 0 to its final value.
+ */
+const StatItem = ({ icon: Icon, endValue, suffix, label }) => {
+  const [count, setCount] = useState(0); // The current number being displayed
+  const [isVisible, setIsVisible] = useState(false); // Whether the stat is on screen
+  const ref = React.useRef(null);
+
+  // 1. Detect when the stat is visible on screen
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) setIsVisible(true);
+    }, { threshold: 0.1 });
+    
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // 2. Run the counting animation when visible
+  useEffect(() => {
+    if (!isVisible) return; // Do nothing if not visible yet
+    
+    let start = 0;
+    const duration = 2000; // Animation takes 2 seconds (2000ms)
+    const increment = endValue / (duration / 16); // Calculate how much to add every 16ms
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= endValue) {
+        setCount(endValue);
+        clearInterval(timer); // Stop the timer when we reach the end value
+      } else {
+        setCount(Math.ceil(start)); // Update the displayed count
+      }
+    }, 16); // 16ms is roughly 60 frames per second
+    
+    return () => clearInterval(timer);
+  }, [isVisible, endValue]);
+
+  return (
+    <div ref={ref} className="text-center group">
+      <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4
+        group-hover:scale-110 group-hover:bg-white/15 transition-all duration-300 border border-white/5">
+        <Icon className="w-6 h-6 text-blue-200/70" />
+      </div>
+      <div className="text-4xl md:text-5xl font-black text-white mb-2 tracking-tight">
+        {count.toLocaleString()}{suffix}
+      </div>
+      <p className="text-blue-200/50 font-semibold uppercase text-xs tracking-widest">{label}</p>
+    </div>
+  );
+};
+
+/** FeatureCard Component */
+const FeatureCard = ({ icon: Icon, title, desc, color }) => (
+  <div className="group bg-white p-7 rounded-2xl border border-slate-100 hover:shadow-xl
+    hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+    <div className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: color }} />
+    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300"
+      style={{ background: `${color}15`, color }}>
+      <Icon className="w-6 h-6" />
+    </div>
+    <h3 className="text-lg font-bold text-slate-900 mb-2">{title}</h3>
+    <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
+  </div>
+);
+
+/** TestimonialCard Component */
+const TestimonialCard = ({ name, role, text, color }) => (
+  <div className="bg-white p-7 rounded-2xl border border-slate-100 hover:shadow-lg transition-all duration-300">
+    <div className="flex gap-1 mb-5">
+      {/* Loop to render 5 stars */}
+      {[1, 2, 3, 4, 5].map(n => (
+        <Star key={n} className="w-4 h-4 fill-amber-400 text-amber-400" />
+      ))}
+    </div>
+    <p className="text-slate-600 leading-relaxed mb-6 text-sm">"{text}"</p>
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 rounded-full font-bold text-sm flex items-center justify-center text-white" style={{ background: color }}>
+        {name.charAt(0)} {/* Display the first letter of the name as an avatar */}
+      </div>
+      <div>
+        <p className="font-bold text-slate-900 text-sm">{name}</p>
+        <p className="text-slate-400 text-xs">{role}</p>
+      </div>
+    </div>
+  </div>
+);
+
+
+/* ============================================================================
+   MAIN PAGE COMPONENT
+   This is the main LandingPage that brings all the pieces together.
+============================================================================ */
 
 const LandingPage = () => {
   // STATE VARIABLES
@@ -267,7 +397,7 @@ const LandingPage = () => {
                       {step.num}
                     </div>
                     <h4 className="text-lg font-bold text-slate-900 mb-2">{step.title}</h4>
-                    <p className="text-sm text-slate-500 leading-relaxed max-w-[240px] mx-auto">{step.desc}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed max-w-60 mx-auto">{step.desc}</p>
                   </div>
                 ))}
               </div>
@@ -315,7 +445,6 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-        </div>
       </section>
 
 
