@@ -29,17 +29,6 @@ const REVIEWS_DATA = [
   { name: "Sumaiya Islam", role: "Community Organizer", color: "#06b6d4", text: "The community upvote feature is brilliant. Major problems affecting many people get prioritized immediately." }
 ];
 
-/* ============================================================================
-   HELPER COMPONENTS
-   These are small, reusable pieces of the user interface.
-============================================================================ */
-
-
-
-/**
- * StatItem Component
- * Purpose: Animates a number counting up from 0 to its final value.
- */
 const StatItem = ({ icon: Icon, endValue, suffix, label }) => {
   const [count, setCount] = useState(0); // The current number being displayed
   const [isVisible, setIsVisible] = useState(false); // Whether the stat is on screen
@@ -127,10 +116,7 @@ const TestimonialCard = ({ name, role, text, color }) => (
 );
 
 
-/* ============================================================================
-   MAIN PAGE COMPONENT
-   This is the main LandingPage that brings all the pieces together.
-============================================================================ */
+
 
 const LandingPage = () => {
   // STATE VARIABLES
