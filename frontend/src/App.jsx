@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage';
 import UserDashboard from './pages/UserDashboard';
 import ReportIssue from './pages/ReportIssue';
 import CommunityFeed from './pages/CommunityFeed';
+import Emergency from './pages/Emergency';
 
 const PlaceholderPage = ({ title }) => {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route path="/feed" element={<CommunityFeed/>} />
           <Route path="/discussions" element={<PlaceholderPage title="Discussions" />} />
           <Route path="/notification" element={<PlaceholderPage title="Notifications" />} />
-          <Route path="/emergency" element={<PlaceholderPage title="Emergency" />} />
+          <Route path="/emergency" element={<Emergency />} />
           <Route path="/issue/:issueId" element={<PlaceholderPage title="Issue Details" />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
