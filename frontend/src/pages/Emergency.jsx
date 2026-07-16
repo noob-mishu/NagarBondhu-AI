@@ -74,65 +74,34 @@ const Emergency = () => {
 
   return (
     <div className="w-full max-w-5xl px-4 py-8 pb-12 md:px-8 md:py-12">
-      <header className="animate-fade-in-up max-w-3xl">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-red-600 to-rose-500 shadow-lg shadow-red-500/20">
-            <Phone className="h-6 w-6 text-white" />
+      
+      <div className="animate-fade-in-up">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-rose-500 flex items-center justify-center shadow-lg shadow-red-500/20">
+            <Phone className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-on-surface">Emergency Services</h1>
-            <p className="text-sm text-on-surface-variant">Get immediate help when you need it most</p>
+            <h1 className="text-3xl font-bold tracking-tight text-on-surface">জরুরি সেবা</h1>
+            <p className="text-sm text-on-surface-variant">Emergency Services</p>
           </div>
         </div>
-        <p className="mt-4 leading-relaxed text-on-surface-variant">
-          Tap a service below to place a call. If anyone is in immediate danger, call National Emergency on <strong className="text-red-700">999</strong>.
+        <p className="text-base text-on-surface-variant mt-3 leading-relaxed">
+          এক ট্যাপে জরুরি সেবায় কল করুন। আপনার নিরাপত্তা আমাদের অগ্রাধিকার।
         </p>
-      </header>
+      </div>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2" aria-label="Primary emergency services">
-        {emergencyServices.map((service) => {
-          const Icon = service.icon;
-          return (
-            <article key={service.id} className={`card-hover rounded-2xl border p-5 ${service.cardClass}`}>
-              <div className="flex items-start justify-between gap-4">
-                <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm ${service.iconClass}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                {service.primary && <span className="rounded-full bg-red-600 px-2 py-1 text-xs font-bold uppercase tracking-wide text-white">Recommended</span>}
-              </div>
-              <h2 className="mt-4 text-lg font-bold text-on-surface">{service.name}</h2>
-              <p className="mt-1 min-h-10 text-sm leading-relaxed text-on-surface-variant">{service.description}</p>
-              <button type="button" onClick={() => setSelectedService(service)} className={`mt-5 flex w-full items-center justify-between rounded-xl bg-white px-4 py-3 font-bold shadow-sm hover:shadow ${service.textClass}`}>
-                <span>Call {service.number}</span>
-                <Phone className="h-5 w-5" />
-              </button>
-            </article>
-          );
-        })}
-      </section>
-
-      <section className="mt-8 rounded-2xl border border-outline-variant/40 bg-surface-container-lowest p-5 shadow-sm">
-        <h2 className="flex items-center gap-2 text-lg font-bold text-on-surface"><AlertTriangle className="h-5 w-5 text-tertiary" /> More useful numbers</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {additionalNumbers.map((service) => (
-            <button key={service.number} type="button" onClick={() => setSelectedService(service)} className="flex items-center justify-between rounded-xl border border-outline-variant/40 bg-surface px-4 py-3 text-left hover:border-primary/40 hover:bg-primary/5">
-              <span><span className="block text-sm font-semibold text-on-surface">{service.name}</span><span className="text-sm text-on-surface-variant">{service.number}</span></span>
-              <Phone className="h-4 w-4 text-primary" />
-            </button>
-          ))}
+      <div className="bg-gradient-to-r from-red-600 to-rose-500 rounded-2xl p-5 flex items-center gap-4 shadow-lg shadow-red-500/20 animate-fade-in-up stagger-1 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
         </div>
-      </section>
-
-      {selectedService && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-on-surface/40 p-4 backdrop-blur-sm sm:items-center" role="dialog" aria-modal="true" aria-labelledby="call-title">
-          <div className="w-full max-w-sm animate-fade-in-up rounded-2xl bg-surface-container-lowest p-6 shadow-2xl">
-            <div className="flex items-start justify-between gap-4"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-100 text-red-600"><Phone className="h-5 w-5" /></div><button type="button" onClick={() => setSelectedService(null)} aria-label="Close call confirmation" className="rounded-lg p-1 text-on-surface-variant hover:bg-surface-container"><X className="h-5 w-5" /></button></div>
-            <h2 id="call-title" className="mt-4 text-xl font-bold text-on-surface">Call {selectedService.name}?</h2>
-            <p className="mt-2 text-sm text-on-surface-variant">Your phone will dial <strong className="text-on-surface">{selectedService.number}</strong>.</p>
-            <div className="mt-6 flex gap-3"><button type="button" onClick={() => setSelectedService(null)} className="flex-1 rounded-xl border border-outline-variant/60 px-4 py-3 text-sm font-semibold text-on-surface hover:bg-surface-container">Cancel</button><button type="button" onClick={makeCall} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white hover:bg-red-700"><Check className="h-4 w-4" />Call now</button></div>
-          </div>
+        <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 animate-pulse-soft">
+          <AlertTriangle className="w-7 h-7 text-white" />
         </div>
-      )}
+        <div className="flex-1 z-10">
+          <h2 className="text-white font-bold text-lg">বিপদে পড়লে এখনই কল করুন</h2>
+          <p className="text-white/80 text-sm mt-0.5">জরুরি পরিস্থিতিতে নিচের যেকোনো নম্বরে ট্যাপ করুন</p>
+        </div>
+      </div>
     </div>
   );
 };
