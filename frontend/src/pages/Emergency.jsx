@@ -102,6 +102,50 @@ const Emergency = () => {
           <p className="text-white/80 text-sm mt-0.5">জরুরি পরিস্থিতিতে নিচের যেকোনো নম্বরে ট্যাপ করুন</p>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {emergencyServices.map((service, idx) => (
+          <button
+            key={service.id}
+            onClick={() => handleCall(service)}
+            className={`${service.bg} border ${service.border} rounded-2xl p-5 flex flex-col gap-4 text-left hover-lift active:scale-[0.97] transition-all duration-200 animate-fade-in-up stagger-${idx + 2} relative overflow-hidden group`}
+          >
+            {/* Pulse indicator for national emergency */}
+            {service.pulse && (
+              <div className="absolute top-4 right-4">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+              </div>
+            )}
+
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                <service.icon className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className={`font-bold text-lg ${service.text}`}>{service.name}</h3>
+                <p className="text-xs text-on-surface-variant font-medium">{service.nameEn}</p>
+              </div>
+            </div>
+
+            <p className="text-sm text-on-surface-variant leading-relaxed">{service.description}</p>
+
+            <div className="flex items-center justify-between mt-auto pt-2 border-t border-outline-variant/30">
+              <div className="flex items-center gap-2">
+                <PhoneCall className={`w-5 h-5 ${service.text}`} />
+                <span className={`text-2xl font-bold ${service.text} tracking-wider`}>{service.number}</span>
+              </div>
+              <div className={`w-8 h-8 rounded-full ${service.bg} border ${service.border} flex items-center justify-center group-hover:bg-white transition-colors`}>
+                <ChevronRight className={`w-4 h-4 ${service.text}`} />
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      
     </div>
   );
 };
