@@ -145,6 +145,28 @@ const Emergency = () => {
         ))}
       </div>
 
+      <div className="glass-card rounded-2xl p-6 animate-fade-in-up stagger-5">
+        <h3 className="font-bold text-lg text-on-surface mb-4 flex items-center gap-2">
+          <Info className="w-5 h-5 text-primary" />
+          অন্যান্য গুরুত্বপূর্ণ নম্বর
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {additionalNumbers.map((item, idx) => (
+            <a
+              key={idx}
+              href={`tel:${item.number}`}
+              className="flex items-center justify-between p-3 rounded-xl border border-outline-variant/30 bg-surface-container-lowest hover:bg-surface-container-low hover:border-primary/20 transition-all group"
+            >
+              <span className="text-sm font-medium text-on-surface group-hover:text-primary transition-colors">{item.name}</span>
+              <span className="text-sm font-bold text-primary flex items-center gap-1.5">
+                <Phone className="w-3.5 h-3.5" />
+                {item.number}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+
       
     </div>
   );
