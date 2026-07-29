@@ -7,6 +7,7 @@ import UserDashboard from './pages/UserDashboard';
 import ReportIssue from './pages/ReportIssue';
 import CommunityFeed from './pages/CommunityFeed';
 import Emergency from './pages/Emergency';
+import Notifications from './pages/Notifications';
 
 const PlaceholderPage = ({ title }) => {
   return (
@@ -35,7 +36,7 @@ function App() {
           <Route path="/report" element={<ReportIssue/>} />
           <Route path="/feed" element={<CommunityFeed/>} />
           <Route path="/discussions" element={<PlaceholderPage title="Discussions" />} />
-          <Route path="/notification" element={<PlaceholderPage title="Notifications" />} />
+          <Route path="/notification" element={<Notifications />} />
           <Route path="/emergency" element={<Emergency />} />
           <Route path="/issue/:issueId" element={<PlaceholderPage title="Issue Details" />} />
         </Route>
