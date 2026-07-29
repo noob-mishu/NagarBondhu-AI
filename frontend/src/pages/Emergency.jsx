@@ -94,7 +94,7 @@ const EmergencyPage = () => {
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 pt-6 pb-12">
 
-      {/* Header */}
+      
       <div className="animate-fade-in-up">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-rose-500 flex items-center justify-center shadow-lg shadow-red-500/20">
@@ -110,7 +110,7 @@ const EmergencyPage = () => {
         </p>
       </div>
 
-      {/* SOS Alert Banner */}
+      
       <div className="bg-gradient-to-r from-red-600 to-rose-500 rounded-2xl p-5 flex items-center gap-4 shadow-lg shadow-red-500/20 animate-fade-in-up stagger-1 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -124,7 +124,7 @@ const EmergencyPage = () => {
         </div>
       </div>
 
-      {/* Emergency Service Cards */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {emergencyServices.map((service, idx) => (
           <button
@@ -132,7 +132,7 @@ const EmergencyPage = () => {
             onClick={() => handleCall(service)}
             className={`${service.bg} border ${service.border} rounded-2xl p-5 flex flex-col gap-4 text-left hover-lift active:scale-[0.97] transition-all duration-200 animate-fade-in-up stagger-${idx + 2} relative overflow-hidden group`}
           >
-            {/* Pulse indicator for national emergency */}
+          
             {service.pulse && (
               <div className="absolute top-4 right-4">
                 <span className="relative flex h-3 w-3">
@@ -167,7 +167,7 @@ const EmergencyPage = () => {
         ))}
       </div>
 
-      {/* Additional Important Numbers */}
+      
       <div className="glass-card rounded-2xl p-6 animate-fade-in-up stagger-5">
         <h3 className="font-bold text-lg text-on-surface mb-4 flex items-center gap-2">
           <Info className="w-5 h-5 text-primary" />
@@ -212,7 +212,7 @@ const EmergencyPage = () => {
         </ul>
       </div>
 
-      {/* Confirmation Modal */}
+      
       {confirmCall && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up">

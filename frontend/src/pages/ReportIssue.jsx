@@ -1,163 +1,337 @@
-import React, { useRef, useState } from "react";
-import { Check, ImagePlus, Loader2, MapPin, Navigation, Upload, X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
+import { 
+  MapPin, 
+  ImagePlus, 
+  BrainCircuit, 
+  Sparkles, 
+  PenTool, 
+  Bot, 
+  Send, 
+  Loader2, 
+  Check, 
+  CheckCircle,
+  AlertCircle
+} from 'lucide-react';
 
-const initialForm = {
-  title: "",
-  category: "",
-  location: "",
-  description: "",
+// Map frontend category values to backend enum values
+const CATEGORY_MAP = {
+  'infrastructure': 'Infrastructure',
+  'sanitation': 'Waste Management',
+  'water': 'Utilities',
+  'electricity': 'Utilities',
+  'safety': 'Safety',
+  'transportation': 'Transportation',
+  'environment': 'Environment',
+  'other': 'Other',
+};
+
+// Simulated AI analysis based on the submitted data
+const generateAiAnalysis = (report) => {
+  const priorityMap = { Low: 30, Medium: 55, High: 75, Critical: 92 };
+  const authorityMap = {
+    Infrastructure: 'City Public Works Dept.',
+    'Waste Management': 'Sanitation & Waste Dept.',
+    Utilities: 'Utilities Board',
+    Safety: 'Public Safety Office',
+    Transportation: 'Transport Authority',
+    Environment: 'Environmental Agency',
+    Other: 'General Municipal Office',
+  };
+
+  const score = priorityMap[report.priority] || 55;
+  const authority = authorityMap[report.category] || 'General Municipal Office';
+  const summary = `"${report.title}" reported at ${report.location}. ${report.description ? report.description.substring(0, 100) : 'Requires attention from relevant authority.'}`;
+
+  return { score, authority, summary, category: report.category };
 };
 
 const ReportIssue = () => {
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
-  const [form, setForm] = useState(initialForm);
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState("idle");
-  const [locationStatus, setLocationStatus] = useState("idle");
+  const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'submitted'
+  const [error, setError] = useState('');
 
-  const updateField = (event) => {
-    const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
-    setErrors((current) => ({ ...current, [name]: "" }));
-  };
+  // Form state
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [location, setLocation] = useState('');
+  const [description, setDescription] = useState('');
 
-  const removeImage = () => {
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
-    setImage(null);
-    setImagePreview("");
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+  // AI analysis result (populated after submission)
+  const [aiResult, setAiResult] = useState(null);
 
-  const selectImage = (event) => {
-    const selectedFile = event.target.files?.[0];
-    if (!selectedFile) return;
+  const handleSubmit = async () => {
+    setError('');
 
-    if (!selectedFile.type.startsWith("image/")) {
-      setErrors((current) => ({ ...current, image: "Please choose a JPG or PNG image." }));
+    // Basic validation
+    if (!title.trim()) {
+      setError('Please provide a title for the issue.');
       return;
     }
-    if (selectedFile.size > 5 * 1024 * 1024) {
-      setErrors((current) => ({ ...current, image: "Image size must be 5MB or less." }));
+    if (!category) {
+      setError('Please select a category.');
+      return;
+    }
+    if (!location.trim()) {
+      setError('Please provide a location.');
       return;
     }
 
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
-    setImage(selectedFile);
-    setImagePreview(URL.createObjectURL(selectedFile));
-    setErrors((current) => ({ ...current, image: "" }));
-  };
-
-  const useCurrentLocation = () => {
-    if (!navigator.geolocation) {
-      setErrors((current) => ({ ...current, location: "Location is not supported by this browser." }));
-      return;
-    }
-
-    setLocationStatus("loading");
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        setForm((current) => ({
-          ...current,
-          location: `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`,
-        }));
-        setErrors((current) => ({ ...current, location: "" }));
-        setLocationStatus("idle");
-      },
-      () => {
-        setErrors((current) => ({ ...current, location: "We could not access your location. Enter it manually instead." }));
-        setLocationStatus("idle");
-      },
-      { enableHighAccuracy: true, timeout: 10000 },
-    );
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const nextErrors = {};
-    if (!form.title.trim()) nextErrors.title = "Please enter an issue title.";
-    if (!form.category) nextErrors.category = "Please select a category.";
-    if (!form.location.trim()) nextErrors.location = "Please provide the issue location.";
-    if (!form.description.trim()) nextErrors.description = "Please describe the issue.";
-
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length) return;
-
-    setStatus("submitting");
-    const report = {
-      id: `NB-${Date.now().toString().slice(-6)}`,
-      ...form,
-      imageName: image?.name || null,
-      status: "Submitted",
-      createdAt: new Date().toISOString(),
-    };
+    setStatus('submitting');
 
     try {
-      const reports = JSON.parse(localStorage.getItem("nagarbondhu-reports") || "[]");
-      localStorage.setItem("nagarbondhu-reports", JSON.stringify([report, ...reports]));
-      setStatus("submitted");
-      window.setTimeout(() => navigate("/dashboard"), 1200);
-    } catch {
-      setStatus("idle");
-      setErrors({ form: "Your report could not be saved. Please try again." });
+      const backendCategory = CATEGORY_MAP[category] || 'Other';
+
+      // Create report via API
+      const reportData = {
+        title: title.trim(),
+        description: description.trim() || 'No description provided', // Fallback for required field
+        category: backendCategory,
+        location: location.trim(),
+      };
+
+      const createdReport = await api.createReport(reportData);
+
+      // Generate AI analysis display from the created report
+      const analysis = generateAiAnalysis(createdReport);
+      setAiResult(analysis);
+      setStatus('submitted');
+
+      // Navigate to feed after a short delay to let user see the result
+      setTimeout(() => {
+        navigate('/feed');
+      }, 3000);
+    } catch (err) {
+      console.error('Report submission error:', err);
+      setError(err.message || 'Failed to submit report. Please try again.');
+      setStatus('idle');
     }
   };
 
-  const inputClass = "w-full border border-outline-variant/50 rounded-lg px-4 py-2 bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-base text-on-surface";
-
   return (
-    <div className="w-full max-w-4xl px-4 py-8 md:px-8 md:py-12 pb-12">
-      <div className="flex flex-col gap-2 max-w-3xl">
+    <div className="w-full flex flex-col gap-6 px-4 py-8 pb-12 sm:px-6 lg:px-10 md:gap-12">
+      <div className="flex flex-col gap-3 max-w-3xl">
         <h2 className="font-headline-md text-3xl font-semibold text-on-surface">Report an Issue</h2>
         <p className="font-body-md text-base text-on-surface-variant">
           Provide details to help us and our AI quickly route your concern to the right authority.
         </p>
       </div>
 
-      <form className="mt-8 flex flex-col gap-6" onSubmit={handleSubmit} noValidate>
-        {errors.form && <p className="rounded-lg bg-error-container px-4 py-3 text-sm text-on-error-container">{errors.form}</p>}
-        <div className="flex flex-col gap-1">
-          <label className="font-medium text-sm text-on-surface">Issue Title</label>
-          <input className={inputClass} id="title" name="title" value={form.title} onChange={updateField} placeholder="e.g., Large pothole on Main St." type="text" aria-invalid={Boolean(errors.title)} />
-          {errors.title && <p className="text-sm text-error">{errors.title}</p>}
+      {/* Error Banner */}
+      {error && (
+        <div className="max-w-3xl lg:max-w-none flex items-center gap-3 bg-error-container/30 border border-error/30 text-error rounded-lg px-4 py-3 text-sm font-medium animate-fade-in-up">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Form Section */}
+        <div className="lg:col-span-7 bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm p-4 md:p-8">
+          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col gap-1">
+              <label className="font-medium text-sm text-on-surface" htmlFor="title">Issue Title</label>
+              <input 
+                className="border border-outline-variant/50 rounded-lg px-4 py-2 bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base text-on-surface" 
+                id="title" 
+                placeholder="e.g., Large pothole on Main St." 
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                disabled={status !== 'idle'}
+              />
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="font-medium text-sm text-on-surface" htmlFor="category">Category</label>
+              <select 
+                className="border border-outline-variant/50 rounded-lg px-4 py-2 bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base text-on-surface appearance-none" 
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                disabled={status !== 'idle'}
+              >
+                <option value="">Select a category</option>
+                <option value="infrastructure">Infrastructure & Roads</option>
+                <option value="sanitation">Waste & Sanitation</option>
+                <option value="water">Water Supply</option>
+                <option value="electricity">Electricity & Lighting</option>
+                <option value="safety">Safety Concern</option>
+                <option value="transportation">Transportation</option>
+                <option value="environment">Environment</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="font-medium text-sm text-on-surface" htmlFor="location">Location</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-2.5 w-5 h-5 text-outline-variant" />
+                <input 
+                  className="w-full border border-outline-variant/50 rounded-lg pl-10 pr-4 py-2 bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base text-on-surface" 
+                  id="location" 
+                  placeholder="Search address or drop pin" 
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  disabled={status !== 'idle'}
+                />
+              </div>
+              <div 
+                className="h-32 bg-surface-container-low rounded-lg mt-2 overflow-hidden relative bg-cover bg-center" 
+                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800&h=300')" }}
+              >
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+                  <span className="font-semibold text-sm text-primary">Adjust Map Pin</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="font-medium text-sm text-on-surface" htmlFor="description">Description</label>
+              <textarea 
+                className="border border-outline-variant/50 rounded-lg px-4 py-2 bg-surface-container-lowest focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-base text-on-surface resize-none" 
+                id="description" 
+                placeholder="Provide more details about the issue..." 
+                rows="4"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                disabled={status !== 'idle'}
+              ></textarea>
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="font-medium text-sm text-on-surface">Image Upload (Optional)</label>
+              <div className="border-2 border-dashed border-outline-variant/50 rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container-low/50 hover:bg-surface-container-low transition-colors cursor-pointer group">
+                <ImagePlus className="w-10 h-10 text-outline-variant group-hover:text-primary transition-colors mb-2" />
+                <p className="text-base text-on-surface-variant text-center">Drag and drop or click to upload</p>
+                <p className="text-sm text-outline text-center mt-1">JPG, PNG up to 5MB</p>
+              </div>
+            </div>
+            
+            <div className="pt-2 flex justify-end">
+              <button 
+                type="button"
+                onClick={handleSubmit}
+                disabled={status !== 'idle'}
+                className={`px-8 py-3 rounded-lg font-semibold text-sm transition-all shadow-sm flex items-center gap-2 ${
+                  status === 'submitted' 
+                    ? 'bg-outline-variant text-on-surface' 
+                    : 'bg-secondary text-white hover:opacity-90 active:scale-[0.98]'
+                } ${status === 'submitting' ? 'opacity-75 cursor-not-allowed' : ''}`}
+              >
+                {status === 'idle' && 'Submit Report'}
+                {status === 'submitting' && (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+                  </>
+                )}
+                {status === 'submitted' && (
+                  <>
+                    <Check className="w-5 h-5" /> Submitted
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="font-medium text-sm text-on-surface" htmlFor="category">Category</label>
-          <select className={inputClass} id="category" name="category" value={form.category} onChange={updateField} aria-invalid={Boolean(errors.category)}>
-            <option value="">Select a category</option><option value="infrastructure">Infrastructure & Roads</option><option value="sanitation">Waste & Sanitation</option><option value="water">Water Supply</option><option value="electricity">Electricity & Lighting</option><option value="other">Other</option>
-          </select>
-          {errors.category && <p className="text-sm text-error">{errors.category}</p>}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="font-medium text-sm text-on-surface" htmlFor="location">Location</label>
-          <div className="flex gap-2">
-            <div className="relative flex-1"><MapPin className="absolute left-3 top-2.5 w-5 h-5 text-outline-variant" /><input className={`${inputClass} pl-10`} id="location" name="location" value={form.location} onChange={updateField} placeholder="Search address or drop pin" type="text" aria-invalid={Boolean(errors.location)} /></div>
-            <button type="button" onClick={useCurrentLocation} disabled={locationStatus === "loading"} className="rounded-lg border border-outline-variant/50 px-3 text-primary hover:bg-primary/5 disabled:opacity-60" aria-label="Use current location"><Navigation className={`h-5 w-5 ${locationStatus === "loading" ? "animate-pulse" : ""}`} /></button>
+        {/* AI Analysis & Status Section */}
+        <div className={`lg:col-span-5 flex flex-col gap-4 transition-all duration-500 ${status === 'idle' || status === 'submitting' ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+          <div className="bg-[#F0F7FF] rounded-xl p-4 md:p-8 ai-gradient-border shadow-sm flex flex-col gap-2 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+              <BrainCircuit className="w-20 h-20" />
+            </div>
+            <div className="flex items-center gap-2 mb-2 relative z-10">
+              <Sparkles className="w-6 h-6 text-primary fill-current" />
+              <h3 className="text-xl font-semibold text-primary">AI Analysis</h3>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 relative z-10">
+              <div className="bg-white/60 rounded-lg p-3">
+                <p className="font-bold text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Predicted Category</p>
+                <p className="font-medium text-sm text-on-surface">
+                  {aiResult ? aiResult.category : '--'}
+                </p>
+              </div>
+              <div className="bg-white/60 rounded-lg p-3">
+                <p className="font-bold text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Suggested Authority</p>
+                <p className="font-medium text-sm text-on-surface">
+                  {aiResult ? aiResult.authority : '--'}
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-white/60 rounded-lg p-4 mt-2 relative z-10">
+              <div className="flex justify-between items-end mb-2">
+                <p className="font-bold text-[10px] text-on-surface-variant uppercase tracking-wider">Priority Score</p>
+                <p className="text-3xl font-bold text-error">
+                  {aiResult ? `${aiResult.score}/100` : '--/100'}
+                </p>
+              </div>
+              <div className="w-full bg-surface-container-high rounded-full h-2">
+                <div 
+                  className={`h-2 rounded-full transition-all duration-1000 ${aiResult ? `bg-tertiary-container` : 'w-0 bg-error'}`}
+                  style={{ width: aiResult ? `${aiResult.score}%` : '0%' }}
+                ></div>
+              </div>
+              <p className="text-sm text-on-surface-variant mt-2">
+                {aiResult 
+                  ? `Priority score of ${aiResult.score} based on category "${aiResult.category}" and reported location.`
+                  : 'Awaiting submission for analysis...'}
+              </p>
+            </div>
+            
+            <div className="bg-white/60 rounded-lg p-4 mt-2 relative z-10">
+              <p className="font-bold text-[10px] text-on-surface-variant mb-1 uppercase tracking-wider">Generated Summary</p>
+              <p className="text-sm text-on-surface italic">
+                {aiResult 
+                  ? aiResult.summary
+                  : 'Submit details to generate an automated executive summary for the responding authority.'}
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-outline">Use the location button to add your current GPS coordinates.</p>
-          {errors.location && <p className="text-sm text-error">{errors.location}</p>}
-        </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="font-medium text-sm text-on-surface" htmlFor="description">Description</label>
-          <textarea className={`${inputClass} resize-none`} id="description" name="description" value={form.description} onChange={updateField} placeholder="Provide more details about the issue..." rows="4" aria-invalid={Boolean(errors.description)} />
-          {errors.description && <p className="text-sm text-error">{errors.description}</p>}
+          <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-sm p-4 md:p-8 flex flex-col gap-4">
+            <h3 className="font-semibold text-sm text-on-surface">Report Status</h3>
+            
+            {/* Step 1 */}
+            <div className="flex items-center gap-4">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 transition-colors ${status === 'submitted' ? 'bg-secondary-container text-secondary' : 'bg-surface-container-high text-outline'}`}>
+                {status === 'submitted' ? <CheckCircle className="w-4 h-4 fill-current text-white" /> : <PenTool className="w-4 h-4" />}
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-sm text-on-surface">Drafting</p>
+              </div>
+            </div>
+            
+            {/* Step 2 */}
+            <div className="flex items-center gap-4 relative">
+              <div className="absolute left-4 top-[-24px] bottom-full w-[2px] bg-outline-variant/30 -z-0"></div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 transition-colors ${status === 'submitted' ? 'bg-secondary-container text-secondary' : 'bg-surface-container-high text-outline'}`}>
+                {status === 'submitted' ? <CheckCircle className="w-4 h-4 fill-current text-white" /> : <Bot className="w-4 h-4" />}
+              </div>
+              <div className="flex-1">
+                <p className={`font-medium text-sm ${status === 'submitted' ? 'text-on-surface' : 'text-on-surface-variant'}`}>AI Processing</p>
+              </div>
+            </div>
+            
+            {/* Step 3 */}
+            <div className="flex items-center gap-4 relative">
+              <div className="absolute left-4 top-[-24px] bottom-full w-[2px] bg-outline-variant/30 -z-0"></div>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center z-10 transition-colors ${status === 'submitted' ? 'bg-primary-container text-primary' : 'bg-surface-container-high text-outline'}`}>
+                <Send className="w-4 h-4" />
+              </div>
+              <div className="flex-1">
+                <p className={`font-medium text-sm ${status === 'submitted' ? 'text-on-surface' : 'text-on-surface-variant'}`}>Routed to Authority</p>
+              </div>
+            </div>
+            
+          </div>
         </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="font-medium text-sm text-on-surface">Image Upload (Optional)</span>
-          <input ref={fileInputRef} id="issue-image" className="sr-only" type="file" accept="image/jpeg,image/png" onChange={selectImage} />
-          {imagePreview ? <div className="relative overflow-hidden rounded-xl border border-outline-variant/50"><img src={imagePreview} alt="Selected issue" className="h-52 w-full object-cover" /><button type="button" onClick={removeImage} className="absolute right-3 top-3 rounded-full bg-white p-2 text-on-surface shadow" aria-label="Remove selected image"><X className="h-4 w-4" /></button><p className="px-3 py-2 text-sm text-on-surface-variant">{image.name}</p></div> : <label htmlFor="issue-image" className="cursor-pointer border-2 border-dashed border-outline-variant/50 rounded-xl p-8 flex flex-col items-center justify-center bg-surface-container-low/50 hover:bg-surface-container-low"><ImagePlus className="w-10 h-10 text-outline-variant mb-2" /><p className="text-base text-on-surface-variant text-center">Drag and drop or click to upload</p><p className="text-sm text-outline text-center mt-1">JPG, PNG up to 5MB</p></label>}
-          {errors.image && <p className="text-sm text-error">{errors.image}</p>}
-        </div>
-
-        <div className="pt-2 flex justify-end"><button type="submit" disabled={status !== "idle"} className={`px-8 py-3 rounded-lg font-semibold text-sm transition-all shadow-sm flex items-center gap-2 ${status === "submitted" ? "bg-secondary text-white" : "bg-primary text-white hover:bg-primary-container"} ${status === "submitting" ? "opacity-75 cursor-not-allowed" : ""}`}>{status === "idle" && <><Upload className="h-5 w-5" />Submit Report</>}{status === "submitting" && <><Loader2 className="w-5 h-5 animate-spin" />Submitting...</>}{status === "submitted" && <><Check className="w-5 h-5" />Submitted</>}</button></div>
-      </form>
+      </div>
     </div>
   );
 };
