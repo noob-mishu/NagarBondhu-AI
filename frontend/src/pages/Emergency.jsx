@@ -1,80 +1,100 @@
-import { useState } from "react";
-import {
-  Ambulance,
-  AlertTriangle,
-  Check,
-  Flame,
-  Phone,
-  Shield,
+import React, { useState } from 'react';
+import { 
+  Phone, 
+  Flame, 
+  Shield, 
+  Ambulance, 
   Siren,
+  AlertTriangle,
+  MapPin,
+  PhoneCall,
   X,
-} from "lucide-react";
+  ChevronRight,
+  Clock,
+  Info
+} from 'lucide-react';
 
 const emergencyServices = [
   {
-    id: "national",
-    name: "National Emergency",
-    number: "999",
-    description: "Police, fire service, and ambulance assistance from one number.",
+    id: 'national',
+    name: 'জাতীয় জরুরি সেবা',
+    nameEn: 'National Emergency',
+    number: '999',
+    description: 'পুলিশ, ফায়ার সার্ভিস, অ্যাম্বুলেন্স — সব এক নম্বরে',
     icon: Siren,
-    cardClass: "border-red-200 bg-red-50",
-    iconClass: "bg-red-600",
-    textClass: "text-red-700",
-    primary: true,
+    gradient: 'from-red-600 to-rose-500',
+    bg: 'bg-red-50',
+    border: 'border-red-200',
+    text: 'text-red-700',
+    ring: 'ring-red-500/30',
+    pulse: true,
   },
   {
-    id: "police",
-    name: "Police",
-    number: "999",
-    description: "Report crime, threats, theft, or other immediate danger.",
+    id: 'police',
+    name: 'পুলিশ',
+    nameEn: 'Police',
+    number: '999',
+    description: 'চুরি, ডাকাতি, সন্ত্রাসী কার্যকলাপ রিপোর্ট করুন',
     icon: Shield,
-    cardClass: "border-blue-200 bg-blue-50",
-    iconClass: "bg-blue-600",
-    textClass: "text-blue-700",
+    gradient: 'from-blue-700 to-blue-500',
+    bg: 'bg-blue-50',
+    border: 'border-blue-200',
+    text: 'text-blue-700',
+    ring: 'ring-blue-500/30',
   },
   {
-    id: "fire",
-    name: "Fire Service",
-    number: "199",
-    description: "For fires, gas leaks, rescue operations, and related hazards.",
+    id: 'fire',
+    name: 'ফায়ার সার্ভিস',
+    nameEn: 'Fire Service',
+    number: '199',
+    description: 'আগুন, গ্যাস লিক, উদ্ধার অপারেশনের জন্য কল করুন',
     icon: Flame,
-    cardClass: "border-orange-200 bg-orange-50",
-    iconClass: "bg-orange-600",
-    textClass: "text-orange-700",
+    gradient: 'from-orange-600 to-amber-500',
+    bg: 'bg-orange-50',
+    border: 'border-orange-200',
+    text: 'text-orange-700',
+    ring: 'ring-orange-500/30',
   },
   {
-    id: "ambulance",
-    name: "Ambulance",
-    number: "199",
-    description: "Request urgent medical assistance and ambulance support.",
+    id: 'ambulance',
+    name: 'অ্যাম্বুলেন্স',
+    nameEn: 'Ambulance',
+    number: '199',
+    description: 'জরুরি চিকিৎসা সাহায্যের জন্য কল করুন',
     icon: Ambulance,
-    cardClass: "border-emerald-200 bg-emerald-50",
-    iconClass: "bg-emerald-600",
-    textClass: "text-emerald-700",
+    gradient: 'from-emerald-600 to-green-500',
+    bg: 'bg-emerald-50',
+    border: 'border-emerald-200',
+    text: 'text-emerald-700',
+    ring: 'ring-emerald-500/30',
   },
 ];
 
 const additionalNumbers = [
-  { name: "RAB", number: "01777-511115" },
-  { name: "Women & Child Helpline", number: "10921" },
-  { name: "Anti-Corruption Commission", number: "106" },
-  { name: "National Information Service", number: "333" },
-  { name: "Health Helpline", number: "16263" },
-  { name: "Disaster Management", number: "1090" },
+  { name: 'RAB (র‍্যাব)', number: '01৭৭৯-৫১১১৫' },
+  { name: 'নারী ও শিশু নির্যাতন', number: '10921' },
+  { name: 'দুর্নীতি দমন কমিশন', number: '106' },
+  { name: 'তথ্য সেবা', number: '333' },
+  { name: 'স্বাস্থ্য বাতায়ন', number: '16263' },
+  { name: 'দুর্যোগ ব্যবস্থাপনা', number: '1090' },
 ];
 
-const Emergency = () => {
-  const [selectedService, setSelectedService] = useState(null);
+const EmergencyPage = () => {
+  const [confirmCall, setConfirmCall] = useState(null);
 
-  const makeCall = () => {
-    if (!selectedService) return;
-    window.location.href = `tel:${selectedService.number.replace(/[^0-9+]/g, "")}`;
-    setSelectedService(null);
+  const handleCall = (service) => {
+    setConfirmCall(service);
+  };
+
+  const makeCall = (number) => {
+    window.location.href = `tel:${number}`;
+    setConfirmCall(null);
   };
 
   return (
-    <div className="w-full max-w-5xl px-4 py-8 pb-12 md:px-8 md:py-12">
-      
+    <div className="w-full max-w-3xl mx-auto flex flex-col gap-8 pt-6 pb-12">
+
+      {/* Header */}
       <div className="animate-fade-in-up">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600 to-rose-500 flex items-center justify-center shadow-lg shadow-red-500/20">
@@ -90,6 +110,7 @@ const Emergency = () => {
         </p>
       </div>
 
+      {/* SOS Alert Banner */}
       <div className="bg-gradient-to-r from-red-600 to-rose-500 rounded-2xl p-5 flex items-center gap-4 shadow-lg shadow-red-500/20 animate-fade-in-up stagger-1 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
@@ -103,6 +124,7 @@ const Emergency = () => {
         </div>
       </div>
 
+      {/* Emergency Service Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {emergencyServices.map((service, idx) => (
           <button
@@ -145,6 +167,7 @@ const Emergency = () => {
         ))}
       </div>
 
+      {/* Additional Important Numbers */}
       <div className="glass-card rounded-2xl p-6 animate-fade-in-up stagger-5">
         <h3 className="font-bold text-lg text-on-surface mb-4 flex items-center gap-2">
           <Info className="w-5 h-5 text-primary" />
@@ -167,9 +190,65 @@ const Emergency = () => {
         </div>
       </div>
 
-      
+      {/* Safety Tips */}
+      <div className="ai-card rounded-2xl p-6 animate-fade-in-up">
+        <h3 className="font-bold text-lg text-on-surface mb-3 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-primary" />
+          জরুরি কলের সময় মনে রাখবেন
+        </h3>
+        <ul className="space-y-2.5">
+          {[
+            'শান্ত থাকুন এবং স্পষ্টভাবে কথা বলুন',
+            'আপনার সঠিক অবস্থান (ঠিকানা/ল্যান্ডমার্ক) জানান',
+            'কী ধরনের জরুরি পরিস্থিতি তা বলুন',
+            'আহত ব্যক্তির সংখ্যা জানান',
+            'অপারেটর লাইন কাটতে না বলা পর্যন্ত ফোনে থাকুন',
+          ].map((tip, idx) => (
+            <li key={idx} className="flex items-start gap-3 text-sm text-on-surface-variant">
+              <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{idx + 1}</span>
+              {tip}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Confirmation Modal */}
+      {confirmCall && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in-up">
+            <div className={`bg-gradient-to-br ${confirmCall.gradient} p-6 text-center`}>
+              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mx-auto mb-3">
+                <confirmCall.icon className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-white font-bold text-xl">{confirmCall.name}</h3>
+              <p className="text-white/80 text-sm mt-1">{confirmCall.nameEn}</p>
+            </div>
+            <div className="p-6 flex flex-col gap-4">
+              <p className="text-center text-on-surface-variant">
+                <span className="text-4xl font-bold text-on-surface block mb-1">{confirmCall.number}</span>
+                এই নম্বরে কল করতে চান?
+              </p>
+              <div className="flex gap-3">
+                <button 
+                  onClick={() => setConfirmCall(null)}
+                  className="flex-1 py-3 px-4 rounded-xl border border-outline-variant text-on-surface-variant font-medium hover:bg-surface-container-low transition-colors active:scale-95"
+                >
+                  বাতিল
+                </button>
+                <button 
+                  onClick={() => makeCall(confirmCall.number)}
+                  className={`flex-1 py-3 px-4 rounded-xl bg-gradient-to-r ${confirmCall.gradient} text-white font-bold shadow-lg hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2`}
+                >
+                  <PhoneCall className="w-5 h-5" />
+                  কল করুন
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Emergency;
+export default EmergencyPage;
