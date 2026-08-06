@@ -13,13 +13,13 @@ import {
   Clock,
   Info
 } from 'lucide-react';
-//Check
+
 const emergencyServices = [
   {
     id: 'national',
     name: 'জাতীয় জরুরি সেবা',
     nameEn: 'National Emergency',
-    number: '999',
+    number: '99965',
     description: 'পুলিশ, ফায়ার সার্ভিস, অ্যাম্বুলেন্স — সব এক নম্বরে',
     icon: Siren,
     gradient: 'from-red-600 to-rose-500',
