@@ -13,7 +13,7 @@ import {
   Clock,
   Info
 } from 'lucide-react';
-//CHeck
+//Check
 const emergencyServices = [
   {
     id: 'national',
