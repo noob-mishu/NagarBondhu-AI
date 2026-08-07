@@ -7,12 +7,6 @@ import {
   ChevronRight, Sparkles, TrendingUp, Heart
 } from 'lucide-react';
 
-/* ============================================================================
-   DATA SECTION
-   We keep our data (features, steps, reviews) here at the top. 
-   This makes the code cleaner and easier to read below.
-============================================================================ */
-
 const FEATURES_DATA = [
   { icon: BrainCircuit, title: "AI Analysis", color: "#2563eb", desc: "Smart routing ensures your problem goes to the right desk instantly, cutting red tape." },
   { icon: Activity, title: "Live Tracking", color: "#f59e0b", desc: "No more guessing. See exactly where your report is in the resolution pipeline." },
@@ -35,17 +29,6 @@ const REVIEWS_DATA = [
   { name: "Sumaiya Islam", role: "Community Organizer", color: "#06b6d4", text: "The community upvote feature is brilliant. Major problems affecting many people get prioritized immediately." }
 ];
 
-/* ============================================================================
-   HELPER COMPONENTS
-   These are small, reusable pieces of the user interface.
-============================================================================ */
-
-
-
-/**
- * StatItem Component
- * Purpose: Animates a number counting up from 0 to its final value.
- */
 const StatItem = ({ icon: Icon, endValue, suffix, label }) => {
   const [count, setCount] = useState(0); // The current number being displayed
   const [isVisible, setIsVisible] = useState(false); // Whether the stat is on screen
@@ -133,10 +116,7 @@ const TestimonialCard = ({ name, role, text, color }) => (
 );
 
 
-/* ============================================================================
-   MAIN PAGE COMPONENT
-   This is the main LandingPage that brings all the pieces together.
-============================================================================ */
+
 
 const LandingPage = () => {
   // STATE VARIABLES
@@ -403,7 +383,7 @@ const LandingPage = () => {
                       {step.num}
                     </div>
                     <h4 className="text-lg font-bold text-slate-900 mb-2">{step.title}</h4>
-                    <p className="text-sm text-slate-500 leading-relaxed max-w-[240px] mx-auto">{step.desc}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed max-w-60 mx-auto">{step.desc}</p>
                   </div>
                 ))}
               </div>

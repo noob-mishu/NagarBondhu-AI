@@ -1,13 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrainCircuit, Medal, CheckCircle, MessageSquare, Megaphone, Trash2 } from 'lucide-react';
-import { useNotifications } from '../context/NotificationContext';
+
+const initialNotifications = [
+  {
+    id: 1,
+    title: 'AI Insight: Critical Issue Detected',
+    time: '10:45 AM',
+    message: 'Our predictive model has flagged a high probability of localized flooding in Ward 12 based on recent drainage blockage reports. Pre-emptive action recommended.',
+    type: 'ai_insight',
+    dateGroup: 'Today',
+    read: false,
+  },
+  {
+    id: 2,
+    title: 'Reward Earned',
+    time: '9:12 AM',
+    message: 'Congratulations! You earned <strong class="text-primary font-semibold">+50 XP</strong> for your verified report on pothole repairs.',
+    type: 'reward',
+    dateGroup: 'Today',
+    read: false,
+  },
+  {
+    id: 3,
+    title: 'Issue Resolved',
+    time: 'Yesterday, 3:30 PM',
+    message: 'Your report regarding the broken street light on Main St has been marked as resolved by the municipal authority.',
+    type: 'resolved',
+    dateGroup: 'Yesterday',
+    read: false,
+  },
+  {
+    id: 4,
+    title: 'New Comment',
+    time: 'Yesterday, 11:05 AM',
+    message: '<strong>Sarah K.</strong> commented on your post "Community Clean-up Drive": "I\'ll be there with extra trash bags!"',
+    type: 'comment',
+    dateGroup: 'Yesterday',
+    read: true,
+  },
+  {
+    id: 5,
+    title: 'Community Announcement',
+    time: 'Mon, 9:00 AM',
+    message: 'Town hall meeting scheduled for this Friday. Topic: Upcoming smart city infrastructure developments.',
+    type: 'announcement',
+    dateGroup: 'This Week',
+    read: true,
+  }
+];
 
 const Notifications = () => {
-  const { notifications, unreadCount, markAllAsRead, markAsRead, removeNotification } = useNotifications();
+  const [notifications, setNotifications] = useState(initialNotifications);
 
-  const handleRemove = (id, e) => {
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(notifications.map(n => (n.id === id ? { ...n, read: true } : n)));
+  };
+  
+  const removeNotification = (id, e) => {
     e.stopPropagation();
-    removeNotification(id);
+    setNotifications(notifications.filter(n => n.id !== id));
   };
 
   const getIcon = (type) => {
@@ -38,9 +93,11 @@ const Notifications = () => {
     return acc;
   }, {});
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
-    <div className="w-full flex flex-col gap-8 pb-12">
-      {/* Page Header */}
+    <div className="w-full flex flex-col gap-10 px-4 py-8 pb-12 sm:px-6 lg:px-10">
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
             <h1 className="font-display-lg text-3xl font-bold tracking-tight text-on-surface">Notifications</h1>
@@ -115,7 +172,7 @@ const Notifications = () => {
                     </div>
 
                     <button 
-                        onClick={(e) => handleRemove(notif.id, e)}
+                        onClick={(e) => removeNotification(notif.id, e)}
                         className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full text-on-surface-variant opacity-0 group-hover:opacity-100 hover:bg-surface-variant hover:text-error transition-all"
                         aria-label="Remove notification"
                     >
