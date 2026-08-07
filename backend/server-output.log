@@ -1,0 +1,57 @@
+
+> nagarbondhu-backend@1.0.0 dev
+> node --watch server.js
+
+Restarting 'server.js'
+Restarting 'server.js'
+🌟 Server is running on port 5000
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+Restarting 'server.js'
+Restarting 'server.js'
+🌟 Server is running on port 5000
+Restarting 'server.js'
+🌟 Server is running on port 5000
+✅ MongoDB Connected Successfully! Host: ac-sopycpc-shard-00-00.lzuva5i.mongodb.net
+Restarting 'server.js'
+Restarting 'server.js'
+🌟 Server is running on port 5000
+Restarting 'server.js'
+🌟 Server is running on port 5000
+⏳ Retrying in 3s...
+⏳ Retrying in 6s...
+Failed running 'server.js'. Waiting for file changes before restarting...
