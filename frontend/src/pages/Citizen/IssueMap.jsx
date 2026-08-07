@@ -32,7 +32,7 @@ import {
   Radio
 } from 'lucide-react';
 
-/* ── Emergency issue / incident er jnoo*/
+/* ── Emergency / Immediate Incidents ── */
 const emergencyAlerts = [
   {
     id: 'e1',
