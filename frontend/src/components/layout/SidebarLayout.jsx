@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, Link, Navigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import { Menu, Search, Bell, X, Loader2 } from 'lucide-react';
@@ -6,8 +6,20 @@ import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 
 const SidebarLayout = () => {
-  const { user, isAuthenticated, loading, logout } = useAuth();
+  const { user, isAuthenticated, loading, logout, isAdmin } = useAuth();
   const { unreadCount } = useNotifications();
+
+  // Desktop collapse (icon-only rail) is remembered across sessions;
+  // the mobile drawer is per-visit state.
+  const [collapsed, setCollapsed] = useState(() => localStorage.getItem('sidebarCollapsed') === 'true');
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const toggleCollapse = () => {
+    setCollapsed((prev) => {
+      localStorage.setItem('sidebarCollapsed', String(!prev));
+      return !prev;
+    });
+  };
 
   if (loading) {
     return (
@@ -23,14 +35,23 @@ const SidebarLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-background w-full font-body-md text-on-surface">
-      <Sidebar />
-      
+      <Sidebar
+        collapsed={collapsed}
+        onToggleCollapse={toggleCollapse}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
+      />
+
       {/* Main Content Area */}
-      <div className="flex-1 lg:ml-80 flex flex-col min-h-screen">
+      <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${collapsed ? 'lg:ml-20' : 'lg:ml-80'}`}>
         {/* Top App Bar */}
-        <header className="bg-surface-container-lowest/80 backdrop-blur-xl fixed top-0 w-full lg:w-[calc(100%-20rem)] z-50 border-b border-outline-variant/20 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex justify-between items-center px-4 md:px-10 h-16 transition-all">
+        <header className={`bg-surface-container-lowest/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-outline-variant/20 shadow-[0_1px_3px_rgba(0,0,0,0.04)] flex justify-between items-center px-4 md:px-10 h-16 transition-all duration-300 ${collapsed ? 'lg:w-[calc(100%-5rem)]' : 'lg:w-[calc(100%-20rem)]'}`}>
           <div className="flex items-center gap-4 lg:hidden">
-            <button className="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all active:scale-90">
+            <button
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+              className="text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-all active:scale-90"
+            >
               <Menu className="w-6 h-6" />
             </button>
             <span className="font-headline-sm text-lg text-primary font-bold tracking-tight">NagarBondhu</span>
@@ -60,7 +81,7 @@ const SidebarLayout = () => {
             <button className="relative text-on-surface-variant hover:bg-surface-container-low p-2.5 rounded-full transition-all lg:hidden active:scale-90">
               <Search className="w-5 h-5" />
             </button>
-            <Link to="/dashboard">
+            <Link to={isAdmin ? '/admin' : '/dashboard'}>
               <img 
                 alt="User Profile" 
                 className="w-9 h-9 rounded-full object-cover ml-1 border-2 border-outline-variant/30 shadow-sm lg:hidden hover:ring-2 hover:ring-primary/20 transition-all cursor-pointer" 

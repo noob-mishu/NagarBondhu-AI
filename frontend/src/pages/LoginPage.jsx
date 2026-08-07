@@ -14,13 +14,14 @@ const LoginPage = () => {
     location: '',
   });
   const navigate = useNavigate();
-  const { login, register, isAuthenticated, loading } = useAuth();
+  const { login, register, isAuthenticated, loading, isAdmin } = useAuth();
 
   React.useEffect(() => {
     if (isAuthenticated && !loading) {
-      navigate('/dashboard', { replace: true });
+      // Admins land on the Admin Dashboard; citizens on their own dashboard.
+      navigate(isAdmin ? '/admin' : '/dashboard', { replace: true });
     }
-  }, [isAuthenticated, loading, navigate]);
+  }, [isAuthenticated, loading, isAdmin, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -197,6 +198,7 @@ const LoginPage = () => {
                   type="password" 
                   autoComplete={isLogin ? "current-password" : "new-password"} 
                   required 
+                  minLength={6}
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleChange}
